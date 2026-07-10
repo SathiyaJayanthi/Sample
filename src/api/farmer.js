@@ -12,7 +12,7 @@ const mockProducts = [
     unit: 'kg',
     harvestDate: '2026-07-10',
     photoUrl: 'https://images.unsplash.com/photo-1561136594-7f68413baa99?auto=format&fit=crop&w=600&q=80',
-    location: 'Mettupalayam',
+    location: { address: 'Mettupalayam, Tamil Nadu', lat: 11.2994, lng: 76.9441 },
     status: 'active',
   },
   {
@@ -24,7 +24,7 @@ const mockProducts = [
     unit: 'kg',
     harvestDate: '2026-07-08',
     photoUrl: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?auto=format&fit=crop&w=600&q=80',
-    location: 'Coimbatore',
+    location: { address: 'Coimbatore, Tamil Nadu', lat: 11.0168, lng: 76.9558 },
     status: 'sold_out',
   },
 ];

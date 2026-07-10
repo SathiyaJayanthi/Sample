@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import {
   createFarmerProduct,
@@ -8,6 +9,8 @@ import {
   updateFarmerOrderStatus,
   updateFarmerProduct,
 } from '../../api/farmer';
+import { MapView } from '../../shared';
+import { LocationPicker } from './components/LocationPicker';
 
 const emptyForm = {
   name: '',
@@ -16,7 +19,7 @@ const emptyForm = {
   quantity: '',
   unit: 'kg',
   harvestDate: '',
-  location: '',
+  location: { address: '', lat: '', lng: '' },
   status: 'active',
   photoUrl: '',
 };
@@ -70,6 +73,7 @@ function FarmerDashboard() {
     event.preventDefault();
     const payload = {
       ...form,
+      location: form.location,
       price: Number(form.price),
       quantity: Number(form.quantity),
     };
@@ -95,6 +99,9 @@ function FarmerDashboard() {
     setForm({
       ...emptyForm,
       ...product,
+      location: typeof product.location === 'object' && product.location !== null
+        ? product.location
+        : { address: product.location || '', lat: '', lng: '' },
       price: product.price,
       quantity: product.quantity,
     });
@@ -155,16 +162,24 @@ function FarmerDashboard() {
                 <h2 className="text-xl font-semibold">Product inventory</h2>
                 <p className="text-sm text-slate-500">Add, edit, and retire produce listings.</p>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingId(null);
-                  setForm(emptyForm);
-                }}
-                className="rounded-lg border border-green-600 px-3 py-2 text-sm font-medium text-green-700"
-              >
-                New product
-              </button>
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/browse"
+                  className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700"
+                >
+                  Browse nearby
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingId(null);
+                    setForm(emptyForm);
+                  }}
+                  className="rounded-lg border border-green-600 px-3 py-2 text-sm font-medium text-green-700"
+                >
+                  New product
+                </button>
+              </div>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-5 grid gap-3 rounded-xl border border-slate-200 p-4 md:grid-cols-2">
@@ -174,7 +189,17 @@ function FarmerDashboard() {
               <input className="rounded-lg border border-slate-300 px-3 py-2" name="quantity" type="number" min="0" value={form.quantity} onChange={handleChange} placeholder="Quantity" required />
               <input className="rounded-lg border border-slate-300 px-3 py-2" name="unit" value={form.unit} onChange={handleChange} placeholder="Unit" required />
               <input className="rounded-lg border border-slate-300 px-3 py-2" name="harvestDate" type="date" value={form.harvestDate} onChange={handleChange} required />
-              <input className="rounded-lg border border-slate-300 px-3 py-2" name="location" value={form.location} onChange={handleChange} placeholder="Location" required />
+              <div className="md:col-span-2">
+                <LocationPicker
+                  value={form.location}
+                  onChange={(nextLocation) => setForm((current) => ({ ...current, location: nextLocation }))}
+                />
+              </div>
+              {form.location?.lat && form.location?.lng ? (
+                <div className="md:col-span-2">
+                  <MapView center={form.location} markers={[{ id: 'selected', title: form.name || 'Selected farm', description: form.location.address, lat: form.location.lat, lng: form.location.lng, color: '#16a34a' }]} height="220px" />
+                </div>
+              ) : null}
               <select className="rounded-lg border border-slate-300 px-3 py-2" name="status" value={form.status} onChange={handleChange}>
                 <option value="active">Active</option>
                 <option value="sold_out">Sold out</option>
@@ -208,6 +233,7 @@ function FarmerDashboard() {
                       <p className="mt-3 text-sm text-slate-600">₹{product.price}/{product.unit}</p>
                       <p className="text-sm text-slate-600">Available: {product.quantity} {product.unit}</p>
                       <p className="text-sm text-slate-600">Harvested: {product.harvestDate}</p>
+                      <p className="text-sm text-slate-600">Location: {typeof product.location === 'object' && product.location !== null ? product.location.address : product.location}</p>
                       <div className="mt-4 flex gap-2">
                         <button type="button" onClick={() => startEdit(product)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
                           Edit
