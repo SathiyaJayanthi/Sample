@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './modules/auth';
 import ProtectedRoute from './modules/auth/components/ProtectedRoute';
 import LoginPage from './modules/auth/pages/LoginPage';
@@ -31,13 +31,21 @@ function DashboardPage() {
             <h1 className="text-2xl font-semibold">Welcome, {user?.name || 'farmer'}!</h1>
             <p className="mt-2 text-sm text-slate-600">Your authentication context is live and ready for downstream modules.</p>
           </div>
-          <button
-            type="button"
-            onClick={logout}
-            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-          >
-            Logout
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/browse"
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            >
+              Browse produce
+            </Link>
+            <button
+              type="button"
+              onClick={logout}
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            >
+              Logout
+            </button>
+          </div>
         </div>
         <div className="mt-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
           <p><span className="font-medium text-slate-800">Email:</span> {user?.email}</p>
