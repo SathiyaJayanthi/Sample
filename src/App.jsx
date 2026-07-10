@@ -4,6 +4,7 @@ import ProtectedRoute from './modules/auth/components/ProtectedRoute';
 import LoginPage from './modules/auth/pages/LoginPage';
 import SignupPage from './modules/auth/pages/SignupPage';
 import './index.css';
+import FarmerDashboard from './modules/farmer/FarmerDashboard';
 
 function DashboardPage() {
   const { user, logout } = useAuth();
