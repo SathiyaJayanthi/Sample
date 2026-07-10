@@ -5,6 +5,15 @@ import LoginPage from './modules/auth/pages/LoginPage';
 import SignupPage from './modules/auth/pages/SignupPage';
 import './index.css';
 import FarmerDashboard from './modules/farmer/FarmerDashboard';
+import {
+  CartProvider,
+  ConsumerBrowsePage,
+  ConsumerCartPage,
+  ConsumerCheckoutPage,
+  ConsumerOrdersPage,
+  ConsumerProductPage,
+  ConsumerReviewPage,
+} from './modules/consumer';
 
 function DashboardPage() {
   const { user, logout } = useAuth();
@@ -37,17 +46,25 @@ function DashboardPage() {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<ConsumerBrowsePage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/farmer" element={<FarmerDashboard />} />
+              <Route path="/products/:id" element={<ConsumerProductPage />} />
+              <Route path="/cart" element={<ConsumerCartPage />} />
+              <Route path="/checkout" element={<ConsumerCheckoutPage />} />
+              <Route path="/orders" element={<ConsumerOrdersPage />} />
+              <Route path="/reviews/:id" element={<ConsumerReviewPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   );
 }
