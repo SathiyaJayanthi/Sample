@@ -1,24 +1,54 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider, useAuth } from './modules/auth';
+import ProtectedRoute from './modules/auth/components/ProtectedRoute';
+import LoginPage from './modules/auth/pages/LoginPage';
+import SignupPage from './modules/auth/pages/SignupPage';
 import './index.css';
 import FarmerDashboard from './modules/farmer/FarmerDashboard';
 
+function DashboardPage() {
+  const { user, logout } = useAuth();
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-6 text-slate-800">
+      <div className="mx-auto max-w-3xl rounded-2xl bg-white p-8 shadow-sm">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold">Welcome, {user?.name || 'farmer'}!</h1>
+            <p className="mt-2 text-sm text-slate-600">Your authentication context is live and ready for downstream modules.</p>
+          </div>
+          <button
+            type="button"
+            onClick={logout}
+            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+          >
+            Logout
+          </button>
+        </div>
+        <div className="mt-6 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
+          <p><span className="font-medium text-slate-800">Email:</span> {user?.email}</p>
+          <p className="mt-2"><span className="font-medium text-slate-800">Role:</span> {user?.role}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800">
-      <header className="bg-green-700 text-white p-6">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold">FarmConnect</h1>
-            <p className="mt-2 text-green-100">Shared contract scaffold for the platform.</p>
-          </div>
-          <a href="#farmer" className="rounded-full border border-white/40 px-4 py-2 text-sm font-medium">
-            Farmer module
-          </a>
-        </div>
-      </header>
-      <main id="farmer" className="mx-auto max-w-7xl p-4 md:p-6">
-        <FarmerDashboard />
-      </main>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
