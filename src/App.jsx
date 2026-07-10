@@ -14,6 +14,11 @@ import {
   ConsumerProductPage,
   ConsumerReviewPage,
 } from './modules/consumer';
+import {
+  AdminDashboardPage,
+  AdminOrdersPage,
+  AdminVerificationPage,
+} from './modules/admin';
 
 function DashboardPage() {
   const { user, logout } = useAuth();
@@ -60,6 +65,9 @@ function App() {
               <Route path="/checkout" element={<ConsumerCheckoutPage />} />
               <Route path="/orders" element={<ConsumerOrdersPage />} />
               <Route path="/reviews/:id" element={<ConsumerReviewPage />} />
+              <Route path="/admin" element={<AdminDashboardPage />} />
+              <Route path="/admin/verification" element={<AdminVerificationPage />} />
+              <Route path="/admin/orders" element={<AdminOrdersPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
